@@ -1,0 +1,30 @@
+
+.chat-line__message, .chat-line__status {
+    display: none;
+}
+
+.chat-line__username {
+    /* display:block; */
+}
+
+.chat-line__timestamp {
+    display:none;
+}
+
+
+.tct-textarea {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    padding-right: 3rem !important;
+}
+
+
+.tct-hypearea {
+    padding: 10px;
+    background:black;
+    flex-grow: 1;
+    max-height: 200px;
+    overflow-x:hidden;
+    overflow-y: auto;
+}
