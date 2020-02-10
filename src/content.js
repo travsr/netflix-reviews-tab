@@ -1,9 +1,11 @@
 import jQuery from 'jquery';
-import Log from './Utils/Log';
+import { Log } from './Utils/Log';
 
 // Hook into click events on the main body element and then do our stuff
-Log.log("Ready");
-Log.log("Netflix Ratings Tab Loaded.");
+Log("Ready");
+Log("Netflix Ratings Tab Loaded.");
+
+console.log("extension loaded.");
 
 
 String.prototype.hashCode = function() {
@@ -344,7 +346,7 @@ jQuery('body').on('click', (e) => {
         
     }
 });
-Log.log("event added");
+Log("event added");
 
 
 

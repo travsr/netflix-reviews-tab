@@ -1,8 +1,6 @@
 
-class Log {
-    log(obj) {
-        console.log(obj);
-    }
-}
+export const Log = (obj) => {
 
-export default Log;
+    console.log(obj);
+
+}
