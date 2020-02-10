@@ -1,1 +1,10 @@
 node_modules
+node_modules/*
+.idea
+.vscode
+logs
+logs/*
+npm-debug.log
+.DS_Store
+.cache
+package-lock.json

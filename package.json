@@ -1,0 +1,17 @@
+{
+    "name": "netflix-ratings-tab",
+    "version": "0.0.1",
+    "description": "A Firefox add-on that adds an additional ratings and reviews tab when viewing a show's details.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/travsr/netflix-ratings-tab.git"
+    },
+    "license": "MIT",
+    "scripts": {
+        "build": "",
+        "package": "cd src && zip -r -FS ../dist/nrt-extension.zip * --exclude *.git*"
+    },
+    "dependencies": {
+        "jquery": "^3.4.1"
+    }
+}

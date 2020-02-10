@@ -1,8 +1,8 @@
 {
     "manifest_version" : 2,
-    "name" : "MetaStream",
+    "name" : "Netflix Ratings Tab",
     "version" : "0.1.0",
-    "description" : "Adds additional info to Netflix, YouTube, Twitch",
+    "description" : "Adds additional info to Netflix",
     "icons" : {
         "48" : "icons/border-48.png"
     },
