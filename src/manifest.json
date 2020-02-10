@@ -4,10 +4,10 @@
     "version" : "0.1.0",
     "description" : "Adds additional info to Netflix, YouTube, Twitch",
     "icons" : {
-        "48" : "src/icons/border-48.png"
+        "48" : "icons/border-48.png"
     },
     "background" : {
-        "scripts" : ["src/background.js"]
+        "scripts" : ["background.js"]
     },
     "permissions" : [
         "*://*.imdb.com/*",  "*://*.rottentomatoes.com/*"
@@ -16,12 +16,12 @@
         {
             "matches": ["*://*.netflix.com/*"],
             "js" : [
-                "src/js/lib/jquery-3.3.1.min.js",
-                "src/js/Constants.js",
-                "src/app.js"
+                "js/lib/jquery-3.3.1.min.js",
+                "js/Constants.js",
+                "app.js"
             ],
             "css" : [
-                "src/css/style.css"
+                "css/style.css"
             ]
         }
     ]
