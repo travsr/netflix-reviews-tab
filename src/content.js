@@ -1,4 +1,4 @@
-import jQuery from 'jquery';
+import $ from 'jquery';
 import { Log } from './Utils/Log';
 
 // Hook into click events on the main body element and then do our stuff
@@ -6,23 +6,8 @@ Log("Ready");
 Log("Netflix Ratings Tab Loaded.");
 
 console.log("extension loaded.");
+console.log( browser.runtime.getURL('icons/loading.svg') );
 
-
-String.prototype.hashCode = function() {
-    var hash = 0, i, chr, len;
-    if (this.length === 0) return hash;
-    for (i = 0, len = this.length; i < len; i++) {
-      chr   = this.charCodeAt(i);
-      hash  = ((hash << 5) - hash) + chr;
-      hash |= 0; // Convert to 32bit integer
-    }
-    return hash;
-};
-
-
-String.prototype.isUpperCase = function() {
-  return this.valueOf().toUpperCase() === this.valueOf();
-};
 
 // showRatingsTab()
 //
@@ -30,29 +15,43 @@ String.prototype.isUpperCase = function() {
 //
 let showRatingsTab = (parentContainerClass) => {
 
-    jQuery(parentContainerClass + ' #pane-Ratings').html('<div style="padding-top:2em;">\
-        <div>\
-            <span class="imdb-score" style="color:#46D369;font-weight:bold;font-size: 2.5em;"></span>\
-            <span class="imdb_logo" style="margin-left: 1em;"></span>\
-        </div>\
-        <div style="margin-top: 10px;">\
-            <span class="tomato-score" style="color:#46D369;font-weight:bold;font-size: 2.5em;"></span>\
-            <span class="tomato-logo" style="margin-left: 1em;"></span>\
-        </div>\
-        <div style="position:absolute;top:0;right:12px;padding-right: 12px;max-height:300px;width:70%;overflow:auto;font-size:1.6em;" class="reviews"></div>\
-    </div>');
+    $(parentContainerClass + ' #pane-Ratings').html(`<div style="padding-top:2em;">
+        <div style="position:absolute; top: 30%; left: 60px;">
+            <div>
+                <a href="" class="imdb_link" target="_blank" >
+                    <span class="imdb-score" style="color:#46D369;font-weight:bold;font-size: 2.5em;"></span>
+                    <span class="imdb_logo" style="margin-left: 1em;"></span>
+                </a>
+            </div>
+            <div style="margin-top: 12px;">
+                <a href="" class="tomato_link" target="_blank">
+                    <span class="tomato-score" style="color:#46D369;font-weight:bold;font-size: 2.5em;"></span>
+                    <span class="tomato-logo" style="margin-left: 1em;"></span>
+                </a>
+            </div>
+        </div>
+        <div style="position:absolute;top:6%;left: 30%; bottom: 12%; right: 12px; max-width: 750px; overflow:auto;font-size:1.6em;" class="reviews">
+            <div class="reviews-loading" style="display:flex; justify-content:center;align-items:center;margin: 200px;">
+                <img src="` + browser.runtime.getURL('images/loading.svg') + `" style="width:50px;height:50px;" />
+            </div>
+            <div class="reviews-inner" style="max-width: 700px;">
+                <h1>IMDB Reviews</h1>
+            </div>
+        </div>
+    </div>`);
 
-    let title = jQuery( parentContainerClass + ' .logo').attr('alt');
+    let title = $( parentContainerClass + ' .logo').attr('alt');
+
 
     // Query IMDB for ratings info by using their search
     fetch("https://www.imdb.com/find?q=" + title.replace(/ /g, '+')).then(resp => resp.text()).then((result) => {
 
-        let body = jQuery(result);
+        let body = $(result);
         let results = body.find('.result_text a');
 
         // If a result was found let's go ahead and fetch it
         if(results[0]) {
-            let href = jQuery(results[0]).attr('href');
+            let href = $(results[0]).attr('href');
             href = href.substring(0, href.indexOf('?'));
            // console.log(href);
 
@@ -60,15 +59,18 @@ let showRatingsTab = (parentContainerClass) => {
             // Fetch the imdb rating
            fetch("https://www.imdb.com" + href).then(resp => resp.text()).then((p) => {
 
-                let page = jQuery(p);
+                let page = $(p);
 
                 let rating = page.find('.ratingValue').text();
-                let logo = page.find('#home_img');
-                logo.attr('width',32);
-                logo.attr('height', 16);
 
-                jQuery(parentContainerClass + ' #pane-Ratings').find('.imdb-score').text(rating);
-                jQuery(parentContainerClass + ' #pane-Ratings').find('.imdb_logo').append(logo);
+                // Append the rating and the logo
+                $(parentContainerClass + ' #pane-Ratings').find('.imdb-score').text(rating);
+                $(parentContainerClass + ' #pane-Ratings').find('.imdb_logo').append(
+                    $('<img src="'+browser.runtime.getURL('images/imdb.svg')+'" width="32" height="16" />')
+                );
+
+                // Set the imdb link
+                $(parentContainerClass + ' #pane-Ratings').find('.imdb_link').attr('href', "https://www.imdb.com" + href);
 
 
            });
@@ -77,18 +79,18 @@ let showRatingsTab = (parentContainerClass) => {
            // Fetch the imdb reviews
            fetch("https://www.imdb.com" + href + "reviews").then(resp => resp.text()).then((p) => {
 
-                let page = jQuery(p);
+                let page = $(p);
 
-                let parent = jQuery(parentContainerClass + ' #pane-Ratings').find('.reviews');
+                let parent = $(parentContainerClass + ' #pane-Ratings').find('.reviews-inner');
 
                 let reviews = page.find('.review-container');
 
                 // loop thru each review and add it
                 reviews.each((i,review) => {
 
-                    var r = jQuery(review);
+                    var r = $(review);
 
-                    var rev = jQuery('<div style="padding-bottom: 30px; border-bottom: 1px solid #666;margin-bottom: 30px;"/>')
+                    var rev = $('<div style="padding-bottom: 30px; border-bottom: 1px solid #666;margin-bottom: 30px;"/>')
                         .append('<h2 style="color:#fff;margin-bottom:0px;">' + r.find('.title').text() + '</h2>' );
 
                     if(r.find('.ipl-ratings-bar').html()) {
@@ -97,11 +99,15 @@ let showRatingsTab = (parentContainerClass) => {
 
                     rev
                         .append('<small style="color: #ddd;">' + r.find('.display-name-date').text() + '</small>' )
-                        .append('<div style="margin-top:6px;">' + r.find('.text').html() + '</div>' );
+                        .append('<div style="margin-top:6px;color: #999;">' + r.find('.text').html() + '</div>' );
 
                     parent.append(rev);
 
                 });
+
+                // Hide the reviews-loading spinner
+                $(parentContainerClass + ' #pane-Ratings').find('.reviews-loading').css('display','none');
+
             });
 
         }
@@ -114,14 +120,14 @@ let showRatingsTab = (parentContainerClass) => {
 
         // Determine the show's content type (tv or movie) - needed for scraping
         let contentType = "movie";
-        if(jQuery(parentContainerClass + ' ul.menu .Episodes')[0] ) {
+        if($(parentContainerClass + ' ul.menu .Episodes')[0] ) {
             contentType = "tv";
         }
         console.log(contentType);
 
 
         //console.log(result);
-        // let body = jQuery(result);
+        // let body = $(result);
         // let results = {};
 
         let item = {};
@@ -137,26 +143,29 @@ let showRatingsTab = (parentContainerClass) => {
         if(item) {
             console.log(item);
             // append meterscore
-            jQuery(parentContainerClass + ' #pane-Ratings').find('.tomato-score').text(item.meterScore + "%");
+            $(parentContainerClass + ' #pane-Ratings').find('.tomato-score').text(item.meterScore + "%");
 
             // append logo
-            let meterImg = jQuery('<img/>').css({width: 16, height: 16});
+            let meterImg = $('<img/>').css({width: 16, height: 16});
 
             if(item.meterClass=="fresh") {
-                meterImg.attr('src','https://www.rottentomatoes.com/assets/pizza-pie/images/icons/tomatometer/tomatometer-fresh.149b5e8adc3.svg'); // fresh
+                meterImg.attr('src',browser.runtime.getURL('images/tomato_fresh.svg')); // fresh
                 meterImg.attr('title', 'Fresh');
             }
             else if(item.meterClass=="rotten") {
-                meterImg.attr('src',' https://www.rottentomatoes.com/assets/pizza-pie/images/icons/tomatometer/tomatometer-rotten.f1ef4f02ce3.svg');
+                meterImg.attr('src',browser.runtime.getURL('images/tomato_rotten.svg'));
                 meterImg.attr('title', 'Rotten');
             }
             else if(item.meterClass=="certified_fresh") {
-                meterImg.attr('src','https://www.rottentomatoes.com/assets/pizza-pie/images/icons/tomatometer/certified_fresh.75211285dbb.svg');
+                meterImg.attr('src',browser.runtime.getURL('images/tomato_certified_fresh.svg'));
                 meterImg.attr('title', 'Certified Fresh');
             }
             
 
-            jQuery(parentContainerClass + ' #pane-Ratings').find('.tomato-logo').append(meterImg);
+            $(parentContainerClass + ' #pane-Ratings').find('.tomato-logo').append(meterImg);
+
+            // Set the imdb link
+            $(parentContainerClass + ' #pane-Ratings').find('.tomato_link').attr('href', "https://www.rottentomatoes.com" + item.url);
 
         }
 
@@ -174,13 +183,13 @@ let showRatingsTab = (parentContainerClass) => {
 let showOverviewTabExtras = (parentContainerClass) => {
    
 
-    let title = jQuery( parentContainerClass + ' .logo').attr('alt');
+    let title = $( parentContainerClass + ' .logo').attr('alt');
     console.log("show overview tab extras. " + parentContainerClass);
 
 
     // insert a new video-meta <span> after the one that already exists, to put our content
-    let videoMeta = jQuery('<span class="meta video-meta metaflix-video-meta" style="margin-top: 1em;"></span>');
-    jQuery(parentContainerClass + ' #pane-Overview .video-meta').after(videoMeta);
+    let videoMeta = $('<span class="meta video-meta metaflix-video-meta" style="margin-top: 1em;"></span>');
+    $(parentContainerClass + ' #pane-Overview .video-meta').after(videoMeta);
 
     
 
@@ -189,12 +198,12 @@ let showOverviewTabExtras = (parentContainerClass) => {
     // Query IMDB for ratings info by using their search
     fetch("https://www.imdb.com/find?q=" + title.replace(/ /g, '+')).then(resp => resp.text()).then((result) => {
 
-        let body = jQuery(result);
+        let body = $(result);
         let results = body.find('.result_text a');
 
         // If a result was found let's go ahead and fetch it
         if(results[0]) {
-            let href = jQuery(results[0]).attr('href');
+            let href = $(results[0]).attr('href');
             href = href.substring(0, href.indexOf('?'));
            // console.log(href);
 
@@ -202,16 +211,15 @@ let showOverviewTabExtras = (parentContainerClass) => {
             // Fetch the imdb rating
            fetch("https://www.imdb.com" + href).then(resp => resp.text()).then((p) => {
 
-                let page = jQuery(p);
+                let page = $(p);
 
                 let rating = page.find('.ratingValue').text();
-                let logo = page.find('#home_img');
-                logo.attr('width',30);
-                logo.attr('height', 14);
-                logo.css('margin-right', '12px');
 
-                jQuery(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append('<span>'+rating+'</span>');
-                jQuery(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append(logo);
+                $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append('<span>'+rating+'</span>');
+
+                $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append(
+                    $('<img src="'+browser.runtime.getURL('images/imdb.svg')+'" width="30" height="14" style="margin-right:12px;" />')
+                );
 
 
            });
@@ -226,7 +234,7 @@ let showOverviewTabExtras = (parentContainerClass) => {
 
         // Determine the show's content type (tv or movie) - needed for scraping
         let contentType = "movie";
-        if(jQuery(parentContainerClass + ' ul.menu .Episodes')[0] ) {
+        if($(parentContainerClass + ' ul.menu .Episodes')[0] ) {
             contentType = "tv";
         }
 
@@ -243,10 +251,10 @@ let showOverviewTabExtras = (parentContainerClass) => {
         if(item) {
             console.log(item);
             // append meterscore
-            jQuery(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append('<span>'+ item.meterScore + "%</span>");
+            $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append('<span>'+ item.meterScore + "%</span>");
 
             // append logo
-            let meterImg = jQuery('<img/>').css({width: 14, height: 14, marginRight: 12});
+            let meterImg = $('<img/>').css({width: 14, height: 14, marginRight: 12});
 
             if(item.meterClass=="fresh") {
                 meterImg.attr('src','https://www.rottentomatoes.com/assets/pizza-pie/images/icons/tomatometer/tomatometer-fresh.149b5e8adc3.svg'); // fresh
@@ -261,7 +269,7 @@ let showOverviewTabExtras = (parentContainerClass) => {
                 meterImg.attr('title', 'Certified Fresh');
             }
 
-            jQuery(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append(meterImg);
+            $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append(meterImg);
 
         }
 
@@ -276,24 +284,27 @@ let showOverviewTabExtras = (parentContainerClass) => {
 let initMoreInfo = (parentContainerClass) => {
 
     // Mark the existing menu list elements as default so we can differentiate them from the ones we're about to add
-    jQuery(parentContainerClass + ' ul.menu li').addClass("defaultBtn");
+    $(parentContainerClass + ' ul.menu li').addClass("defaultBtn");
 
     // Create our "Ratings & Reviews" tab
-    let menuItem = jQuery('<li class="ratingsBtn"><a role="link" tabindex="0">RATINGS & REVIEWS</a><span></span></li>');
-    jQuery(parentContainerClass + ' ul.menu').append(menuItem);
+    let menuItem = $('<li class="ratingsBtn"><a role="link" tabindex="0">RATINGS & REVIEWS</a><span></span></li>');
+    $(parentContainerClass + ' ul.menu').append(menuItem);
+
+
 
     // Any Other Default Tab was clicked
-    jQuery(parentContainerClass + ' ul.menu .defaultBtn').on('click', (el) => {
-        //console.log(el.target);
+    $(parentContainerClass + ' ul.menu .defaultBtn').on('click', (el) => {
+
         // remove the ratings pane if it exists
-        jQuery(parentContainerClass + ' #pane-Ratings').remove();
+        $(parentContainerClass + ' #pane-Ratings').remove();
+
         // Restore the details pane if it was hidden
-        jQuery(parentContainerClass + ' #pane-ShowDetails').css({display:'block'});
-        jQuery(parentContainerClass + ' .ratingsBtn').removeClass('current');
+        $(parentContainerClass + ' #pane-ShowDetails').css({display:'block'});
+        $(parentContainerClass + ' .ratingsBtn').removeClass('current');
 
 
         // The Overview Tab was clicked lets modify it
-        if(jQuery(el.target).text() == "OVERVIEW") {
+        if($(el.target).text() == "OVERVIEW") {
             console.log("overview clicked");
             setTimeout(()=>{
                 showOverviewTabExtras(parentContainerClass);
@@ -304,17 +315,17 @@ let initMoreInfo = (parentContainerClass) => {
 
 
     // Our "Ratings & Reviews" tab was clicked
-    jQuery(parentContainerClass + ' ul.menu .ratingsBtn').on('click', (e) => {
+    $(parentContainerClass + ' ul.menu .ratingsBtn').on('click', (e) => {
 
         // Click on the details pane tab to force the jawbonepane into the "paused" state
-        jQuery(parentContainerClass + ' .ShowDetails a')[0].click();
+        $(parentContainerClass + ' .ShowDetails a')[0].click();
          // Hide details pane content
-        jQuery(parentContainerClass + ' #pane-ShowDetails').css({display:'none'});
+        $(parentContainerClass + ' #pane-ShowDetails').css({display:'none'});
         // Append our custom pane
-        jQuery(parentContainerClass + ' .jawBonePanes').append('<div id="pane-Ratings" class="jawBonePane" style="opacity:1"></div>');
+        $(parentContainerClass + ' .jawBone').append('<div id="pane-Ratings" class="jawBonePane" style="opacity:1"></div>');
         // highlighte the ratings button
-        jQuery(parentContainerClass + ' ul.menu li').removeClass('current');
-        jQuery(parentContainerClass + ' .ratingsBtn').addClass('current');
+        $(parentContainerClass + ' ul.menu li').removeClass('current');
+        $(parentContainerClass + ' .ratingsBtn').addClass('current');
         // Populate the ratings tab with content
         showRatingsTab(parentContainerClass);
       //  console.log("ratings button clicked");
@@ -332,18 +343,15 @@ let initMoreInfo = (parentContainerClass) => {
 
 
 // Add Tab for header container if one exists
-jQuery('.jawBoneContainer').addClass('jawBoneHeaderContainer');
+$('.jawBoneContainer').addClass('jawBoneHeaderContainer');
 initMoreInfo('.jawBoneHeaderContainer');
 
 // When a container is clicked and expanded for more info, add a ratings tab there as well
-jQuery('body').on('click', (e) => {
+$('body').on('click', (e) => {
     if(e.target && (e.target.className.indexOf("bob-jaw") != -1 || e.target.className.indexOf("boxart") != -1 ) ) {
-
-
             setTimeout(() => {
                 initMoreInfo('.jawBoneOpenContainer');
         }, 10);
-        
     }
 });
 Log("event added");
