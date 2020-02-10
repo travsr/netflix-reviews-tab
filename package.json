@@ -6,7 +6,6 @@
         "type": "git",
         "url": "https://github.com/travsr/netflix-ratings-tab.git"
     },
-    "license": "MIT",
     "scripts": {
         "dev-bg": "parcel src/background.js -d build --out-file background.bundle.js --no-source-maps",
         "dev-content": "parcel src/content.js -d build --out-file content.bundle.js --no-source-maps",
