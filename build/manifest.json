@@ -7,7 +7,7 @@
         "48" : "icons/border-48.png"
     },
     "background" : {
-        "scripts" : ["background.js"]
+        "scripts" : ["background.bundle.js"]
     },
     "permissions" : [
         "*://*.imdb.com/*",  "*://*.rottentomatoes.com/*"
@@ -16,9 +16,7 @@
         {
             "matches": ["*://*.netflix.com/*"],
             "js" : [
-                "js/lib/jquery-3.3.1.min.js",
-                "js/Constants.js",
-                "app.js"
+                "content.bundle.js"
             ],
             "css" : [
                 "css/style.css"

@@ -8,10 +8,14 @@
     },
     "license": "MIT",
     "scripts": {
-        "build": "",
-        "package": "cd src && zip -r -FS ../dist/nrt-extension.zip * --exclude *.git*"
+        "dev-bg"        : "parcel src/background.js -d build --out-file background.bundle.js --no-source-maps",
+        "dev-content"   : "parcel src/content.js -d build --out-file content.bundle.js --no-source-maps",        
+        "build-bg"      : "parcel build src/background.js -d build --out-file background.bundle.js --no-source-maps",
+        "build-content" : "parcel build src/content.js -d build --out-file content.bundle.js --no-source-maps",
+        "package"       : "cd src && zip -r -FS ../dist/nrt-extension.zip * --exclude *.git*",
+        "build-all"     : "npm run build-bg && npm run build-content && npm run package"
     },
     "dependencies": {
-        "jquery": "^3.4.1"
+        "jquery" : "^3.4.1"
     }
 }
