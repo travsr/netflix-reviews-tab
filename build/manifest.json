@@ -2,7 +2,7 @@
     "manifest_version" : 2,
     "name" : "Netflix Ratings Tab",
     "version" : "0.1.0",
-    "description" : "A Firefox add-on that adds an additional ratings and reviews tab when viewing a show's details.",
+    "description" : "A Firefox add-on that adds an additional \"Ratings and Reviews\" tab when viewing a show's details.",
     "icons" : {
         "48" : "images/icon.svg"
     },

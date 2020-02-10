@@ -1,13 +1,8 @@
 import $ from 'jquery';
-import { Log } from './Utils/Log';
 
 // Hook into click events on the main body element and then do our stuff
-Log("Ready");
-Log("Netflix Ratings Tab Loaded.");
-
-console.log("extension loaded.");
-console.log( browser.runtime.getURL('icons/loading.svg') );
-
+console.log("Ready");
+console.log("Netflix Ratings Tab Loaded.");
 
 // showRatingsTab()
 //
@@ -328,10 +323,9 @@ let initMoreInfo = (parentContainerClass) => {
         $(parentContainerClass + ' .ratingsBtn').addClass('current');
         // Populate the ratings tab with content
         showRatingsTab(parentContainerClass);
-      //  console.log("ratings button clicked");
+        //  console.log("ratings button clicked");
         // console.log('item clicked');
     });
-
 
     // Since the Overview tab is open by default, the first thing we need to always do is modify it
     showOverviewTabExtras(parentContainerClass);
@@ -341,8 +335,11 @@ let initMoreInfo = (parentContainerClass) => {
 
 
 
+// Entry Points //
+// When certain actions occur or things are performed by the user,
+// we use our functions to add in our ratings tab.
 
-// Add Tab for header container if one exists
+// Add Tab for the header container if one exists
 $('.jawBoneContainer').addClass('jawBoneHeaderContainer');
 initMoreInfo('.jawBoneHeaderContainer');
 
@@ -354,9 +351,3 @@ $('body').on('click', (e) => {
         }, 10);
     }
 });
-Log("event added");
-
-
-
-
-

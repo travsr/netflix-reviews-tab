@@ -7,4 +7,3 @@ logs/*
 npm-debug.log
 .DS_Store
 .cache
-package-lock.json
