@@ -1,4 +1,4 @@
-# netflix-ratings-tab
+# netflix-reviews-tab
 
 A Firefox add-on that adds an additional \"Ratings and Reviews\" tab when expanding a show's details on Netflix.com. When viewing a show's details, this extension scrapes ratings and reviews from Rotten Tomatos and IMDB, and displays that info in a container view that seamlessly integrates with the rest of netflix's UI.
 
