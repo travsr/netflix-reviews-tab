@@ -1,8 +1,17 @@
 import $ from 'jquery';
+import Utils from './Components/Utils';
 
-// Hook into click events on the main body element and then do our stuff
 console.log("Ready");
 console.log("Netflix Ratings Tab Loaded.");
+
+// Get the runtime API (chromium vs firefox)
+let runtime;
+if(typeof browser !== "undefined") {
+    runtime = browser.runtime;
+}
+else if(typeof chrome !== "undefined") {
+    runtime = chrome.runtime;
+}
 
 // showRatingsTab()
 //
@@ -27,7 +36,7 @@ let showRatingsTab = (parentContainerClass) => {
         </div>
         <div style="position:absolute;top:6%;left: 30%; bottom: 12%; right: 12px; max-width: 750px; overflow:auto;font-size:1.6em;" class="reviews">
             <div class="reviews-loading" style="display:flex; justify-content:center;align-items:center;margin: 200px;">
-                <img src="` + browser.runtime.getURL('images/loading.svg') + `" style="width:50px;height:50px;" />
+                <img src="` + runtime.getURL('images/loading.svg') + `" style="width:50px;height:50px;" />
             </div>
             <div class="reviews-inner" style="max-width: 700px;">
                 <h1>IMDB Reviews</h1>
@@ -37,9 +46,11 @@ let showRatingsTab = (parentContainerClass) => {
 
     let title = $( parentContainerClass + ' .logo').attr('alt');
 
-
-    // Query IMDB for ratings info by using their search
-    fetch("https://www.imdb.com/find?q=" + title.replace(/ /g, '+')).then(resp => resp.text()).then((result) => {
+    Utils.sendMessage({
+        action : "fetch", 
+        type : "text",
+        url : "https://www.imdb.com/find?q=" + title.replace(/ /g, '+')
+    }).then((result) => {
 
         let body = $(result);
         let results = body.find('.result_text a');
@@ -50,9 +61,12 @@ let showRatingsTab = (parentContainerClass) => {
             href = href.substring(0, href.indexOf('?'));
            // console.log(href);
 
-
             // Fetch the imdb rating
-           fetch("https://www.imdb.com" + href).then(resp => resp.text()).then((p) => {
+            Utils.sendMessage({
+                action : "fetch", 
+                type : "text",
+                url : "https://www.imdb.com" + href
+            }).then((p) => {
 
                 let page = $(p);
 
@@ -61,7 +75,7 @@ let showRatingsTab = (parentContainerClass) => {
                 // Append the rating and the logo
                 $(parentContainerClass + ' #pane-Ratings').find('.imdb-score').text(rating);
                 $(parentContainerClass + ' #pane-Ratings').find('.imdb_logo').append(
-                    $('<img src="'+browser.runtime.getURL('images/imdb.svg')+'" width="32" height="16" />')
+                    $('<img src="'+runtime.getURL('images/imdb.svg')+'" width="32" height="16" />')
                 );
 
                 // Set the imdb link
@@ -72,7 +86,12 @@ let showRatingsTab = (parentContainerClass) => {
 
 
            // Fetch the imdb reviews
-           fetch("https://www.imdb.com" + href + "reviews").then(resp => resp.text()).then((p) => {
+           
+           Utils.sendMessage({
+                action : "fetch", 
+                type : "text",
+                url : "https://www.imdb.com" + href + "reviews"
+            }).then((p) => {
 
                 let page = $(p);
 
@@ -106,11 +125,18 @@ let showRatingsTab = (parentContainerClass) => {
             });
 
         }
-    }); // end imdb fetch
+
+
+
+    });
 
 
     // Query Rotten Tomatos for ratings
-    fetch("https://www.rottentomatoes.com/napi/search/?offset=0&query=" + title.replace(/ /g, '+')).then(resp => resp.json()).then((result) => {
+    Utils.sendMessage({
+        action : "fetch", 
+        type : "json",
+        url : "https://www.rottentomatoes.com/napi/search/?offset=0&query=" + title.replace(/ /g, '+')
+    }).then((result) => {
 
 
         // Determine the show's content type (tv or movie) - needed for scraping
@@ -144,15 +170,15 @@ let showRatingsTab = (parentContainerClass) => {
             let meterImg = $('<img/>').css({width: 16, height: 16});
 
             if(item.meterClass=="fresh") {
-                meterImg.attr('src',browser.runtime.getURL('images/tomato_fresh.svg')); // fresh
+                meterImg.attr('src',runtime.getURL('images/tomato_fresh.svg')); // fresh
                 meterImg.attr('title', 'Fresh');
             }
             else if(item.meterClass=="rotten") {
-                meterImg.attr('src',browser.runtime.getURL('images/tomato_rotten.svg'));
+                meterImg.attr('src',runtime.getURL('images/tomato_rotten.svg'));
                 meterImg.attr('title', 'Rotten');
             }
             else if(item.meterClass=="certified_fresh") {
-                meterImg.attr('src',browser.runtime.getURL('images/tomato_certified_fresh.svg'));
+                meterImg.attr('src',runtime.getURL('images/tomato_certified_fresh.svg'));
                 meterImg.attr('title', 'Certified Fresh');
             }
             
@@ -188,10 +214,11 @@ let showOverviewTabExtras = (parentContainerClass) => {
 
     
 
-
-
-    // Query IMDB for ratings info by using their search
-    fetch("https://www.imdb.com/find?q=" + title.replace(/ /g, '+')).then(resp => resp.text()).then((result) => {
+    Utils.sendMessage({
+        action : "fetch", 
+        type : "text",
+        url : "https://www.imdb.com/find?q=" + title.replace(/ /g, '+')
+    }).then((result) => {
 
         let body = $(result);
         let results = body.find('.result_text a');
@@ -204,7 +231,11 @@ let showOverviewTabExtras = (parentContainerClass) => {
 
 
             // Fetch the imdb rating
-           fetch("https://www.imdb.com" + href).then(resp => resp.text()).then((p) => {
+            Utils.sendMessage({
+                action : "fetch", 
+                type : "text",
+                url : "https://www.imdb.com" + href
+            }).then((p) => {
 
                 let page = $(p);
 
@@ -213,7 +244,7 @@ let showOverviewTabExtras = (parentContainerClass) => {
                 $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append('<span>'+rating+'</span>');
 
                 $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append(
-                    $('<img src="'+browser.runtime.getURL('images/imdb.svg')+'" width="30" height="14" style="margin-right:12px;" />')
+                    $('<img src="'+runtime.getURL('images/imdb.svg')+'" width="30" height="14" style="margin-right:12px;" />')
                 );
 
 
@@ -224,8 +255,11 @@ let showOverviewTabExtras = (parentContainerClass) => {
 
 
     // Query Rotten Tomatos for ratings
-    fetch("https://www.rottentomatoes.com/napi/search/?offset=0&query=" + title.replace(/ /g, '+')).then(resp => resp.json()).then((result) => {
-
+    Utils.sendMessage({
+        action : "fetch", 
+        type : "json",
+        url : "https://www.rottentomatoes.com/napi/search/?offset=0&query=" + title.replace(/ /g, '+')
+    }).then((result) => {
 
         // Determine the show's content type (tv or movie) - needed for scraping
         let contentType = "movie";
