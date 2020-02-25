@@ -4,15 +4,6 @@ import Utils from './Components/Utils';
 console.log("Ready");
 console.log("Netflix Ratings Tab Loaded.");
 
-// Get the runtime API (chromium vs firefox)
-let runtime;
-if(typeof browser !== "undefined") {
-    runtime = browser.runtime;
-}
-else if(typeof chrome !== "undefined") {
-    runtime = chrome.runtime;
-}
-
 // showRatingsTab()
 //
 // Scrape info from imdb and rotten tomatos to put in the ratings tab
