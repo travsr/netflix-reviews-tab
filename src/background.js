@@ -13,12 +13,14 @@ else if(typeof chrome !== "undefined") {
 runtime.onMessage.addListener((request, sender, sendResponse) => {
     // console.log("message received: ");
     // console.log(request);
+    console.log("message sent:");
+    console.log(request);
 
     if(request.action == "fetch") {
         fetch(request.url).then((resp) => {
 
-            // console.log("fetch completed.");
-            // console.log(resp);
+            console.log("fetch completed.");
+            console.log(resp);
 
             if(request.type == "text") {
                 return resp.text();

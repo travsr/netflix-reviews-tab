@@ -51,11 +51,13 @@ class Utils {
         let api = this.getAPI();
         let platform = this.getPlatform();
 
-        // console.log("Sending message...");
-        // console.log(api);
+        //console.log("Sending message...");
+        //console.log(api);
 
         // If it's firefox go ahead and pass it through
         if(platform == "firefox") {
+           // console.log("got message.");
+
             return api.runtime.sendMessage(message);
         }
         // If it's chrome use the callback function to wrap in a promise

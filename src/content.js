@@ -3,12 +3,21 @@ import Utils from './Components/Utils';
 
 console.log("Ready");
 console.log("Netflix Ratings Tab Loaded.");
+console.log(Utils.getPlatform());
+
+
+let runtime = Utils.getAPI().runtime;
+
+console.log(runtime.getURL("/test"));
 
 // showRatingsTab()
 //
 // Scrape info from imdb and rotten tomatos to put in the ratings tab
 //
 let showRatingsTab = (parentContainerClass) => {
+
+    console.log("showing ratings tab test");
+    
 
     $(parentContainerClass + ' #pane-Ratings').html(`<div style="padding-top:2em;">
         <div style="position:absolute; top: 30%; left: 60px;">
@@ -37,11 +46,16 @@ let showRatingsTab = (parentContainerClass) => {
 
     let title = $( parentContainerClass + ' .logo').attr('alt');
 
+    //console.log("test");
+    
     Utils.sendMessage({
         action : "fetch", 
         type : "text",
         url : "https://www.imdb.com/find?q=" + title.replace(/ /g, '+')
     }).then((result) => {
+
+       // console.log("got response");
+       // console.log(result);
 
         let body = $(result);
         let results = body.find('.result_text a');
@@ -153,9 +167,12 @@ let showRatingsTab = (parentContainerClass) => {
         }
 
         if(item) {
-            console.log(item);
+            //console.log(item);
             // append meterscore
-            $(parentContainerClass + ' #pane-Ratings').find('.tomato-score').text(item.meterScore + "%");
+            if(item.meterScore) {
+                $(parentContainerClass + ' #pane-Ratings').find('.tomato-score').text(item.meterScore + "%");
+            }
+            
 
             // append logo
             let meterImg = $('<img/>').css({width: 16, height: 16});
@@ -196,7 +213,7 @@ let showOverviewTabExtras = (parentContainerClass) => {
    
 
     let title = $( parentContainerClass + ' .logo').attr('alt');
-    console.log("show overview tab extras. " + parentContainerClass);
+    //console.log("show overview tab extras. " + parentContainerClass);
 
 
     // insert a new video-meta <span> after the one that already exists, to put our content
@@ -269,23 +286,25 @@ let showOverviewTabExtras = (parentContainerClass) => {
         }
 
         if(item) {
-            console.log(item);
+            //console.log(item);
             // append meterscore
-            $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append('<span>'+ item.meterScore + "%</span>");
+            if(item.meterScore) {
+                $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append('<span>'+ item.meterScore + "%</span>");
+            }
 
             // append logo
             let meterImg = $('<img/>').css({width: 14, height: 14, marginRight: 12});
 
             if(item.meterClass=="fresh") {
-                meterImg.attr('src','https://www.rottentomatoes.com/assets/pizza-pie/images/icons/tomatometer/tomatometer-fresh.149b5e8adc3.svg'); // fresh
+                meterImg.attr('src',runtime.getURL('images/tomato_fresh.svg')); // fresh
                 meterImg.attr('title', 'Fresh');
             }
             else if(item.meterClass=="rotten") {
-                meterImg.attr('src',' https://www.rottentomatoes.com/assets/pizza-pie/images/icons/tomatometer/tomatometer-rotten.f1ef4f02ce3.svg');
+                meterImg.attr('src',runtime.getURL('images/tomato_rotten.svg'));
                 meterImg.attr('title', 'Rotten');
             }
             else if(item.meterClass=="certified_fresh") {
-                meterImg.attr('src','https://www.rottentomatoes.com/assets/pizza-pie/images/icons/tomatometer/certified_fresh.75211285dbb.svg');
+                meterImg.attr('src',runtime.getURL('images/tomato_certified_fresh.svg'));
                 meterImg.attr('title', 'Certified Fresh');
             }
 
@@ -325,7 +344,7 @@ let initMoreInfo = (parentContainerClass) => {
 
         // The Overview Tab was clicked lets modify it
         if($(el.target).text() == "OVERVIEW") {
-            console.log("overview clicked");
+            //console.log("overview clicked");
             setTimeout(()=>{
                 showOverviewTabExtras(parentContainerClass);
             }, 400);
