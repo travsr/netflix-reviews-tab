@@ -321,6 +321,11 @@ let showOverviewTabExtras = (parentContainerClass) => {
 // Function to create the tab that displays ratings
 //
 let initMoreInfo = (parentContainerClass) => {
+   
+    // If the container does not exist, go ahead and stop
+    if($(parentContainerClass).length == 0) {
+        return;
+    }
 
     // Mark the existing menu list elements as default so we can differentiate them from the ones we're about to add
     $(parentContainerClass + ' ul.menu li').addClass("defaultBtn");
