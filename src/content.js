@@ -166,13 +166,10 @@ let showRatingsTab = (parentContainerClass) => {
             item = result.movies[0];
         }
 
-        if(item) {
+        if(item && item.meterScore) {
             //console.log(item);
             // append meterscore
-            if(item.meterScore) {
-                $(parentContainerClass + ' #pane-Ratings').find('.tomato-score').text(item.meterScore + "%");
-            }
-            
+            $(parentContainerClass + ' #pane-Ratings').find('.tomato-score').text(item.meterScore + "%");
 
             // append logo
             let meterImg = $('<img/>').css({width: 16, height: 16});
@@ -285,12 +282,11 @@ let showOverviewTabExtras = (parentContainerClass) => {
             item = result.movies[0];
         }
 
-        if(item) {
+        if(item && item.meterScore) {
             //console.log(item);
             // append meterscore
-            if(item.meterScore) {
-                $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append('<span>'+ item.meterScore + "%</span>");
-            }
+           
+            $(parentContainerClass + ' #pane-Overview .metaflix-video-meta').append('<span>'+ item.meterScore + "%</span>");
 
             // append logo
             let meterImg = $('<img/>').css({width: 14, height: 14, marginRight: 12});
