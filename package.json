@@ -15,7 +15,7 @@
         "build": "npm run build-bg && npm run build-content && npm run package"
     },
     "dependencies": {
-        "jquery": "^3.4.1"
+        "jquery": "^3.5.0"
     },
     "devDependencies": {
         "parcel-bundler": "^1.12.4"
